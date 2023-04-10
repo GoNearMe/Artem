@@ -1,23 +1,21 @@
-# Compiled class file
-*.class
+// Вік користувача
 
-# Log file
-*.log
+let yearOfBirth = prompt("Введіть рік вашого народження:");
 
-# BlueJ files
-*.ctxt
+let currentYear = prompt("Введіть поточний рік:");
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+let age = currentYear - yearOfBirth;
 
-# Package Files #
-*.jar
-*.war
-*.nar
-*.ear
-*.zip
-*.tar.gz
-*.rar
+alert("Ваш вік: " + age);
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
+// ВІКТОРИНА
+
+let answer = prompt("Чи знаєте ви, що таке програмування? (Так/Ні)");
+
+if (answer.toLowerCase() === "так") {
+  alert("Чудово! Ви знаєте, що таке програмування.");
+} else if (answer.toLowerCase() === "ні") {
+  alert("Програмування - це процес створення програмного забезпечення. Можливо, вам буде цікаво дізнатись більше про це.");
+} else {
+  alert("Будь ласка, введіть Так або Ні.");
+}
