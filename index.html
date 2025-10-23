@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="uk">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Форум ЛПГ — Превʼю</title>
+    <meta name="description" content="Превʼю шкільного форуму Львівської Правничої Гімназії (ЛПГ). Анімації, рейтинги, ролі, адмін-панель." />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+    <link rel="stylesheet" href="css/main.css" />
+</head>
+<body class="bg-slate-100">
+    <canvas id="bgCanvas"></canvas>
+
+    <div class="wrap mx-auto max-w-7xl px-4 py-10 relative z-10 space-y-6">
+        <div class="floating-banner">
+            <span class="badge">vNext</span>
+            <span>Новий досвід для учнів та вчителів: персоналізовані рекомендації, динамічні обговорення, прозорі рейтинги.</span>
+            <button id="btn-roadmap" class="btn-ghost">Переглянути дорожню карту</button>
+        </div>
+
+        <div class="hero rounded-3xl overflow-hidden shadow-2xl mb-6 relative group">
+            <img src="assets/lpg_school.jpg" alt="ЛПГ — фото" class="w-full h-80 object-cover object-center filter saturate-110 transition-all duration-700 group-hover:scale-105"/>
+            <div class="absolute inset-0 flex items-end p-6 bg-gradient-to-t from-slate-900/65 via-slate-900/10 to-transparent">
+                <div class="hero-title-box shadow-2xl">
+                    <div class="w-16 h-16 rounded-2xl bg-white flex items-center justify-center shadow-lg">
+                        <img src="assets/Logo.jpg" class="w-full h-full object-contain object-center filter saturate-110" alt="Логотип ЛПГ"/>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl md:text-4xl font-bold text-white leading-tight">Форум Львівської правничої гімназії</h1>
+                        <div class="text-base text-slate-200">Пропозиції, події, новини та рейтинги активностей.</div>
+                        <div class="mt-3 flex flex-wrap gap-3 text-sm text-white/80">
+                            <span class="pill">AI-рекомендації</span>
+                            <span class="pill">Адмін-панель 2.0</span>
+                            <span class="pill">Гейміфікація</span>
+                            <span class="pill">Google входи</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="topbar flex flex-col lg:flex-row justify-between items-stretch lg:items-center gap-4 mb-4">
+            <div class="search flex-1 flex flex-col xl:flex-row gap-2 items-stretch xl:items-center">
+                <div class="search-field">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input id="search" type="text" placeholder="Пошук по темі, тексту..." class="flex-1" />
+                </div>
+                <div class="relative">
+                    <select id="sort" class="p-3 border border-transparent rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-300 pr-10 appearance-none">
+                        <option value="new">🆕 Нові</option>
+                        <option value="top">🔥 Топ (Оцінка)</option>
+                        <option value="hot">📈 Популярні (Обговорення)</option>
+                        <option value="trending">🌟 Тренди</option>
+                    </select>
+                    <span class="select-chevron"><i class="fa-solid fa-chevron-down"></i></span>
+                </div>
+                <div class="hidden xl:flex items-center gap-3 text-sm text-slate-500">
+                    <span class="flex items-center gap-2"><span class="dot dot-green"></span>Завершені ініціативи</span>
+                    <span class="flex items-center gap-2"><span class="dot dot-yellow"></span>У процесі</span>
+                    <span class="flex items-center gap-2"><span class="dot dot-blue"></span>Нові ідеї</span>
+                </div>
+            </div>
+            <div class="flex flex-wrap gap-2 items-center justify-end">
+                <button id="btn-new-post" class="btn-primary">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    <span>Створити пост</span>
+                </button>
+                <button id="btn-admin" class="btn-ghost">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span>Адмін-панель</span>
+                </button>
+                <button id="btn-analytics" class="btn-ghost">
+                    <i class="fa-solid fa-chart-simple"></i>
+                    <span>Аналітика</span>
+                </button>
+
+                <div id="user-profile-section" class="hidden lg:flex items-center gap-3">
+                    <button id="btn-profile" class="profile-pill">
+                        <img id="user-avatar" class="user-avatar" src="" alt="Profile"/>
+                        <div class="text-left">
+                            <div id="user-name" class="text-sm font-semibold text-slate-700">Користувач</div>
+                            <div id="user-role" class="text-xs text-slate-400">Учень</div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-slate-300"></i>
+                    </button>
+                    <button id="btn-logout" class="btn-ghost text-red-600" type="button">Вихід</button>
+                </div>
+
+                <button id="btn-login" class="google-btn">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google Logo" class="google-icon">
+                    <span>Увійти з Google</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="main-grid grid lg:grid-cols-[minmax(0,1fr)_340px] gap-6">
+            <section class="bg-white/80 rounded-3xl p-4 md:p-6 shadow-xl border border-white/70 backdrop-blur-sm">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h2 class="text-xl font-semibold text-slate-800">Поточні дискусії</h2>
+                        <p class="text-sm text-slate-500">Пріоритизовані згідно з вашим пошуком та фільтрами.</p>
+                    </div>
+                    <button id="btn-subscribe" class="btn-ghost hidden md:flex items-center gap-2">
+                        <i class="fa-regular fa-bell"></i>
+                        <span>Підписатися</span>
+                    </button>
+                </div>
+                <div id="posts-list" class="space-y-4 mt-1"></div>
+            </section>
+
+            <aside class="space-y-4">
+                <div class="bg-white/80 rounded-3xl p-5 shadow-xl border border-white/70 backdrop-blur-sm fade-in">
+                    <h3 class="font-semibold text-lg mb-3">Швидкий перегляд</h3>
+                    <div id="quick-tags" class="flex flex-wrap gap-2"></div>
+                    <div class="mt-4 grid grid-cols-2 gap-3 text-sm text-slate-500">
+                        <div class="stat-card">
+                            <span class="label">Задіяні сьогодні</span>
+                            <span id="stat-active" class="value">0</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="label">Нових ідей</span>
+                            <span id="stat-ideas" class="value">0</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="label">Голосів</span>
+                            <span id="stat-votes" class="value">0</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="label">Коментарів</span>
+                            <span id="stat-comments" class="value">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white/80 rounded-3xl p-5 shadow-xl border border-white/70 backdrop-blur-sm">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="font-semibold text-lg">Статистика</h3>
+                        <span class="text-xs uppercase tracking-wide text-blue-500 bg-blue-50 px-2 py-1 rounded-full">Live</span>
+                    </div>
+                    <div class="text-sm text-slate-500 space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span>Користувачів</span>
+                            <strong id="stat-users" class="text-slate-800">0</strong>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span>Пости сьогодні</span>
+                            <strong id="stat-today" class="text-slate-800">0</strong>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span>Середній рейтинг</span>
+                            <strong id="stat-rating" class="text-slate-800">0.0</strong>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <div class="progress-track">
+                            <div id="progress-activity" class="progress-bar"></div>
+                        </div>
+                        <div class="flex justify-between text-xs text-slate-400 mt-2">
+                            <span>0%</span>
+                            <span>100%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contact-card">
+                    <h3>Контакти</h3>
+                    <div class="contact-info">
+                        <div>Львівська правнича гімназія (ЛПГ)</div>
+                        <div>Email: <a href="mailto:lvivskapravnycha@gmail.com">lvivskapravnycha@gmail.com</a></div>
+                        <div>Бухгалтерія: +380 32 233 6096</div>
+                        <div>Viber: +380 97 543 8264</div>
+                        <div>Телефон: +380 32 233 3563</div>
+                        <div>Адреса: 790007 м. Львів, вул. Леонтовича, 2</div>
+                        <div class="working-hours">Години роботи:
+                            <p>Понеділок - П'ятниця: 9:00 - 18:00</p>
+                            <p>Субота - Неділя: вихідний</p>
+                        </div>
+                    </div>
+
+                    <div class="privacy-policy">
+                        <a href="#">Політика конфіденційності</a>
+                    </div>
+
+                    <div class="socials">
+                        <a href="https://www.facebook.com/lpg.school/?locale=uk_UA" aria-label="Facebook"><img src="assets/facebook.png" alt="Facebook"></a>
+                        <a href="https://www.instagram.com/pravnycha/" aria-label="Instagram"><img src="assets/instagram.png" alt="Instagram"></a>
+                        <a href="https://www.youtube.com/channel/UCDckzy7ypU3s3XxuFaG0hEQ/videos" aria-label="YouTube"><img src="assets/youtube.png" alt="YouTube"></a>
+                    </div>
+
+                    <div class="map-container">
+                        <iframe src="https://www.google.com/maps?q=49.843194,24.018556&hl=uk&z=17&output=embed" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <footer class="mt-10 p-6 bg-white/70 backdrop-blur-xl rounded-3xl shadow-xl border border-white/80">
+            <div class="flex justify-between items-center flex-wrap gap-4 text-sm text-slate-500">
+                <div>
+                    <strong class="text-lg text-slate-800">Форум ЛПГ</strong>
+                    <div>© ЛПГ — 2025. Усі права збережено.</div>
+                </div>
+                <div class="flex gap-4 items-center">
+                    <a href="#" class="link">Про школу</a>
+                    <span class="text-slate-300">|</span>
+                    <a href="#" class="link">Контакти</a>
+                    <span class="text-slate-300">|</span>
+                    <a href="#" class="link">Підтримка</a>
+                </div>
+                <button id="btn-feedback" class="btn-primary md:ml-auto">
+                    <i class="fa-regular fa-message"></i>
+                    <span>Зворотній звʼязок</span>
+                </button>
+            </div>
+        </footer>
+    </div>
+
+    <div id="modal" class="modal" aria-hidden="true">
+        <div class="box">
+            <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-100">
+                <h3 id="modal-title" class="text-2xl font-semibold">Модальне</h3>
+                <div><button id="modal-close" class="text-muted hover:text-slate-900 p-1"><i class="fa-solid fa-xmark text-lg"></i></button></div>
+            </div>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <div id="custom-dialog" class="modal" aria-hidden="true">
+        <div class="box !w-auto max-w-sm p-6">
+            <h4 id="dialog-title" class="text-xl font-semibold mb-3">Сповіщення</h4>
+            <div id="dialog-message" class="text-slate-600 mb-4"></div>
+            <div id="dialog-actions" class="flex justify-end gap-3"></div>
+        </div>
+    </div>
+
+    <template id="post-card-template">
+        <article class="post" data-id="">
+            <div class="post-inner">
+                <div class="post-votes">
+                    <button class="arrow up" type="button"><i class="fa-solid fa-caret-up"></i></button>
+                    <span class="score">0</span>
+                    <button class="arrow down" type="button"><i class="fa-solid fa-caret-down"></i></button>
+                </div>
+                <div class="post-content">
+                    <div class="post-meta">
+                        <span class="status"></span>
+                        <span class="separator">•</span>
+                        <span class="time"></span>
+                        <span class="separator">•</span>
+                        <span class="author"></span>
+                    </div>
+                    <h3 class="post-title"></h3>
+                    <p class="post-text"></p>
+                    <div class="post-tags"></div>
+                </div>
+                <div class="post-actions">
+                    <button class="btn-ghost btn-small"><i class="fa-regular fa-comment"></i> <span class="comments"></span></button>
+                    <button class="btn-ghost btn-small"><i class="fa-regular fa-bookmark"></i></button>
+                    <button class="btn-ghost btn-small"><i class="fa-solid fa-share-nodes"></i></button>
+                </div>
+            </div>
+        </article>
+    </template>
+
+    <script type="module" src="js/forum.module.js"></script>
+    <script type="module" src="js/background.js"></script>
+</body>
+</html>
